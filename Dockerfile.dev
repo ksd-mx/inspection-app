@@ -1,0 +1,24 @@
+# Development Dockerfile (Dockerfile.dev)
+FROM node:20-alpine
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Install dependencies first (layer caching)
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
+
+# Copy source code
+COPY . .
+
+# Environment setup
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Expose development port
+EXPOSE 3000
+
+# Start development server with hot reload
+CMD ["pnpm", "dev"]

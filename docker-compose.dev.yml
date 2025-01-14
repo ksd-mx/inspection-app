@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: inspectors-vault-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    command: pnpm dev
+    networks:
+      - inspectors-vault-network
+    depends_on:
+      - firebase-emulator
+
+  firebase-emulator:
+    image: spine3/firebase-emulator
+    container_name: firebase-emulator
+    ports:
+      - "4000:4000"  # UI
+      - "9099:9099"  # Auth
+      - "8080:8080"  # Firestore
+      - "9199:9199"  # Storage
+      - "5001:5001"  # Functions
+    volumes:
+      - ./firebase.json:/app/firebase.json
+      - ./firestore.rules:/app/firestore.rules
+      - ./firestore.indexes.json:/app/firestore.indexes.json
+      - ./.firebaserc:/app/.firebaserc
+    environment:
+      - FIREBASE_AUTH_EMULATOR_HOST=0.0.0.0:9099
+      - FIRESTORE_EMULATOR_HOST=0.0.0.0:8080
+      - FIREBASE_STORAGE_EMULATOR_HOST=0.0.0.0:9199
+      - FUNCTIONS_EMULATOR_HOST=0.0.0.0:5001
+    networks:
+      - inspectors-vault-network
+
+networks:
+  inspectors-vault-network:
+    driver: bridge

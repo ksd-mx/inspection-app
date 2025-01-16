@@ -1,0 +1,9 @@
+fastapi
+crewai
+uvicorn
+python-multipart
+pillow
+httpx
+python-dotenv
+pytest
+typing-extensions

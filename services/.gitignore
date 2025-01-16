@@ -1,8 +1,0 @@
-# .gitignore
-__pycache__/
-*.pyc
-.pytest_cache/
-.coverage
-htmlcov/
-.venv
-venv
